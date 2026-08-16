@@ -36,62 +36,70 @@ export default function LayerControls({
         </h3>
         <div className="space-y-2">
           <label className="flex items-center justify-between gap-3">
-            <span className="w-14 text-muted">X</span>
+            <span className="w-14 text-muted" id={`label-x-${layer.id}`}>X</span>
             <input
               type="range"
               min={-200}
               max={200}
               value={transform.x}
+              aria-label={`${layer.name} horizontal position`}
+              aria-labelledby={`label-x-${layer.id}`}
               onChange={(e) => updateTransform("x", Number(e.target.value))}
               className="flex-1"
             />
-            <span className="w-10 text-right text-xs text-muted">
+            <span className="w-10 text-right text-xs text-muted" aria-hidden="true">
               {transform.x}
             </span>
           </label>
           <label className="flex items-center justify-between gap-3">
-            <span className="w-14 text-muted">Y</span>
+            <span className="w-14 text-muted" id={`label-y-${layer.id}`}>Y</span>
             <input
               type="range"
               min={-200}
               max={200}
               value={transform.y}
+              aria-label={`${layer.name} vertical position`}
+              aria-labelledby={`label-y-${layer.id}`}
               onChange={(e) => updateTransform("y", Number(e.target.value))}
               className="flex-1"
             />
-            <span className="w-10 text-right text-xs text-muted">
+            <span className="w-10 text-right text-xs text-muted" aria-hidden="true">
               {transform.y}
             </span>
           </label>
           <label className="flex items-center justify-between gap-3">
-            <span className="w-14 text-muted">Scale</span>
+            <span className="w-14 text-muted" id={`label-scale-${layer.id}`}>Scale</span>
             <input
               type="range"
               min={50}
               max={200}
               value={transform.scale * 100}
+              aria-label={`${layer.name} scale percentage`}
+              aria-labelledby={`label-scale-${layer.id}`}
               onChange={(e) =>
                 updateTransform("scale", Number(e.target.value) / 100)
               }
               className="flex-1"
             />
-            <span className="w-10 text-right text-xs text-muted">
+            <span className="w-10 text-right text-xs text-muted" aria-hidden="true">
               {Math.round(transform.scale * 100)}%
             </span>
           </label>
           <label className="flex items-center justify-between gap-3">
-            <span className="w-14 text-muted">Rotate</span>
+            <span className="w-14 text-muted" id={`label-rot-${layer.id}`}>Rotate</span>
             <input
               type="range"
               min={-45}
               max={45}
               value={transform.rotation}
+              aria-label={`${layer.name} rotation in degrees`}
+              aria-labelledby={`label-rot-${layer.id}`}
               onChange={(e) =>
                 updateTransform("rotation", Number(e.target.value))
               }
               className="flex-1"
             />
-            <span className="w-10 text-right text-xs text-muted">
+            <span className="w-10 text-right text-xs text-muted" aria-hidden="true">
               {transform.rotation}°
             </span>
           </label>

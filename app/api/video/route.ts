@@ -1,20 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createKlingJob } from "@/lib/providers/kling";
+import { submitTextToVideo, submitImageToVideo } from "@/lib/providers/falVideo";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
-  const { prompt, duration, cameraRig } = body;
+  const { prompt, duration, imageUrl, aspectRatio } = body;
 
   if (!prompt) {
     return NextResponse.json({ error: "Missing prompt" }, { status: 400 });
   }
 
-  // For now, call the Kling stub; later branch on provider (fal / replicate)
-  const job = await createKlingJob({
-    prompt,
-    duration: duration ?? 4,
-    cameraRig: cameraRig ?? "static",
-  });
+  try {
+    const job = imageUrl
+      ? await submitImageToVideo({ prompt, imageUrl, duration: duration ?? 4 })
+      : await submitTextToVideo({ prompt, duration: duration ?? 4, aspectRatio });
 
-  return NextResponse.json({ jobId: job.id, provider: "kling" });
+    return NextResponse.json({ jobId: job.jobId, provider: "fal", status: job.status });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }
