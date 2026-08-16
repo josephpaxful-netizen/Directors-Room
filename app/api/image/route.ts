@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { generateImage } from "@/lib/providers/falImage";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
@@ -7,10 +8,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Missing prompt" }, { status: 400 });
   }
 
-  // Placeholder: return static demo image
-  return NextResponse.json({
-    url: "/demo/feature-layers.jpg",
-    provider: "fal",
-    model: process.env.FAL_TXT2IMG_MODEL ?? "fal-ai/flux-pro/v1.1-ultra",
-  });
+  try {
+    const result = await generateImage(prompt);
+    return NextResponse.json({ url: result.url, provider: "fal" });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }

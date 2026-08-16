@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useId, useState } from "react";
 
 export default function PromptForm({
   mode,
@@ -9,6 +9,7 @@ export default function PromptForm({
   const [prompt, setPrompt] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [resultUrl, setResultUrl] = useState<string | null>(null);
+  const promptId = useId();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,7 +45,11 @@ export default function PromptForm({
   return (
     <div className="rounded-2xl border border-line bg-panel/70 p-5 space-y-4">
       <form onSubmit={handleSubmit} className="space-y-3">
+        <label htmlFor={promptId} className="sr-only">
+          {mode === "image" ? "Image prompt" : "Video prompt"}
+        </label>
         <textarea
+          id={promptId}
           className="w-full rounded-lg bg-ink border border-line px-3 py-2 text-sm text-white outline-none focus:border-accent min-h-[80px]"
           placeholder={
             mode === "image"
@@ -53,19 +58,22 @@ export default function PromptForm({
           }
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
+          aria-label={mode === "image" ? "Image prompt" : "Video prompt"}
         />
         <button
           type="submit"
-          className="px-6 py-2.5 rounded-full bg-white text-ink text-sm font-medium hover:bg-gold transition-colors"
+          className="px-6 py-2.5 rounded-full bg-white text-ink text-sm font-medium hover:bg-gold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
           Generate {mode}
         </button>
       </form>
-      {status && <div className="text-xs text-muted">{status}</div>}
+      <div role="status" aria-live="polite" className="text-xs text-muted min-h-[1em]">
+        {status}
+      </div>
       {mode === "image" && resultUrl && (
         <div className="mt-3 rounded-xl overflow-hidden border border-line bg-ink">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={resultUrl} alt="Result" className="w-full h-auto object-cover" />
+          <img src={resultUrl} alt="Generated result" className="w-full h-auto object-cover" />
         </div>
       )}
     </div>
